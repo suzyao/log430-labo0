@@ -27,7 +27,3 @@ def test_division():
     my_calculator = Calculator()
     assert my_calculator.division(10, 2) == 5
     assert my_calculator.division(10, 0) == "Erreur : division par zéro"
-
-def test_erreur():
-    my_calculator = Calculator()
-    assert my_calculator.addition(5, 3) == 6
