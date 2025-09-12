@@ -19,24 +19,22 @@ jobs:
 
       - name: Deploy stack on VM
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << 'EOF'
-          set -euo pipefail
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << EOF
+          set -euxo pipefail
 
-          REPO_NAME=\$(basename "$GITHUB_REPOSITORY")
+          REPO_NAME=\$(basename "${{ github.repository }}")
           cd ~
-          if [ ! -d \"\$REPO_NAME\" ]; then
-            git clone https://github.com/$GITHUB_REPOSITORY.git
+          if [ ! -d "\$REPO_NAME" ]; then
+            git clone https://github.com/${{ github.repository }}.git
           fi
-          cd \"\$REPO_NAME\"
+          cd "\$REPO_NAME"
 
           git fetch --all --prune
-          git checkout main
+          git checkout main || git checkout master
           git pull --ff-only
 
           docker compose build --no-cache
           docker compose up -d --remove-orphans
-
           docker image prune -f
-
-          docker compose ps
+          docker compose ps 
           EOF
