@@ -12,17 +12,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+        
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }} 
+
+      - name: Test SSH
+        run: |
+            ssh -vvv -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.VM_HOST_IP }} "echo 'SSH works!'"
+
 
       - name: Deploy stack on VM
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << 'EOF'
           set -euo pipefail
 
-          # Go to repo directory (or clone if it doesn't exist)
           REPO_NAME=$(basename $GITHUB_REPOSITORY)
           cd ~
           if [ ! -d "$REPO_NAME" ]; then
@@ -30,18 +35,14 @@ jobs:
           fi
           cd "$REPO_NAME"
 
-          # Update code
           git fetch --all --prune
           git checkout main
           git pull --ff-only
 
-          # Build and start services
           docker compose build --no-cache
           docker compose up -d --remove-orphans
 
-          # Clean up old Docker images
           docker image prune -f
 
-          # Show running containers
           docker compose ps
           EOF
