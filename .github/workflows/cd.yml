@@ -18,19 +18,22 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_KEY }} 
 
       - name: Deploy stack on VM
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} "
-          cd ~;
-          $REPO_NAME=$(basename '${{ github.repository }}');
-          if (!(Test-Path -Path \$REPO_NAME)) { git clone https://github.com/${{ github.repository }}.git; }
-          cd \$REPO_NAME;
-          git fetch --all --prune;
-          git checkout main || git checkout master;
-          git pull --ff-only;
-          docker compose build --no-cache;
-          docker compose up -d --remove-orphans;
-          docker image prune -f
-          docker compose ps
-          "
         shell: "C:\\Program Files\\Git\\bin\\bash.exe"
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << EOF
+          set -euxo pipefail
+          REPO_NAME=$(basename "${{ github.repository }}")
+          cd ~
+          if [ ! -d "$REPO_NAME" ]; then
+          git clone https://github.com/${{ github.repository }}.git
+          fi
+          cd "$REPO_NAME"
+          git fetch --all --prune
+          git checkout main || git checkout master
+          git pull --ff-only
+          docker compose build --no-cache
+          docker compose up -d --remove-orphans
+          docker image prune -f
+          docker compose ps 
+          EOF
 
