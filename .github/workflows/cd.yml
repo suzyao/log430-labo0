@@ -20,7 +20,7 @@ jobs:
 
       - name: Test SSH
         run: |
-            ssh -vvv -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.VM_HOST_IP }} "echo 'SSH works!'"
+            ssh -vvv -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} "echo 'SSH works!'"
 
 
       - name: Deploy stack on VM
