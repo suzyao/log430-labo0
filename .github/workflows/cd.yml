@@ -18,7 +18,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_KEY }} 
 
       - name: Deploy stack on VM
-        shell: "C:\\Program Files\\Git\\bin\\bash.exe"
+        shell: bash
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << EOF
           set -euxo pipefail
