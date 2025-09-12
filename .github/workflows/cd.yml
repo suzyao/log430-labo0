@@ -22,12 +22,12 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << 'EOF'
           set -euo pipefail
 
-          REPO_NAME=$(basename $GITHUB_REPOSITORY)
+          REPO_NAME=\$(basename "$GITHUB_REPOSITORY")
           cd ~
-          if [ ! -d "$REPO_NAME" ]; then
+          if [ ! -d \"\$REPO_NAME\" ]; then
             git clone https://github.com/$GITHUB_REPOSITORY.git
           fi
-          cd "$REPO_NAME"
+          cd \"\$REPO_NAME\"
 
           git fetch --all --prune
           git checkout main
