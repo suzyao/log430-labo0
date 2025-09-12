@@ -20,12 +20,12 @@ jobs:
       - name: Deploy stack on VM
         shell: bash
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << EOF
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} << 'EOF'
           set -euxo pipefail
-          REPO_NAME=$(basename "${{ github.repository }}")
+          REPO_NAME="${{ github.repository }}"
           cd ~
           if [ ! -d "$REPO_NAME" ]; then
-          git clone https://github.com/${{ github.repository }}.git
+          git clone "https://github.com/${{ github.repository }}.git"
           fi
           cd "$REPO_NAME"
           git fetch --all --prune
