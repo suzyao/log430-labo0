@@ -20,13 +20,12 @@ jobs:
       - name: Deploy stack on VM
         shell: bash
         run: |
-          REPO_NAME="***-labo0"
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} " \
-            cd ~
-            if [ ! -d '$REPO_NAME' ]; then 
-              git clone git@github.com:suzyao/***-labo0.git;
-            fi 
-            cd '$REPO_NAME'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} " 
+            REPO_NAME=\$(basename ${{ github.repository }})
+            if [ ! -d \"\$REPO_NAME\" ]; then
+              git clone https://github.com/${{ github.repository }}.git
+            fi
+            cd \"\$REPO_NAME\"
             git fetch --all --prune
             git checkout main || git checkout master 
             git pull --ff-only
