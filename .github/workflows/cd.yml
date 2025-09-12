@@ -8,8 +8,8 @@ on:
 
 jobs:
   deploy:
+    runs-on: self-hosted
     if: ${{ github.event.workflow_run.conclusion == 'success' }} 
-    runs-on: ubuntu-latest
 
     steps:
       - name: Set up SSH
